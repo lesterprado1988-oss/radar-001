@@ -1,12 +1,11 @@
-# RADAR Diario v0.3
-
-PWA local para diario, detección básica de señales, memoria y recordatorios.
+# RADAR v0.5
+Diario + memoria + señales + recordatorios + respaldo local.
 
 ## Publicación
-Sube el contenido de esta carpeta a tu repositorio de GitHub Pages, reemplazando los archivos anteriores. Mantén `index.html`, `manifest.webmanifest`, `sw.js` e `icon.svg` en la raíz.
+Reemplaza los archivos de la versión anterior en GitHub Pages y haz Commit changes.
 
 ## Datos
-Las entradas, señales, feedback y recordatorios se guardan en `localStorage` del navegador/dispositivo.
+Los datos se guardan localmente en el dispositivo. Usa Exportar respaldo periódicamente.
 
 ## Notificaciones
-El navegador debe conceder permiso. En esta versión, las notificaciones se comprueban mientras la aplicación está activa; el navegador puede limitar notificaciones programadas en segundo plano. Para notificaciones realmente fiables en segundo plano habrá que añadir un mecanismo específico de plataforma/servidor en una versión posterior.
+Activa el permiso desde RADAR. Esta versión comprueba recordatorios mientras la PWA está activa/ejecutándose; las notificaciones web garantizadas en segundo plano requieren un servicio push/backend en una siguiente arquitectura.
