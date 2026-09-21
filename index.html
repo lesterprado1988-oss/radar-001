@@ -1,17 +1,26 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#111827"><link rel="manifest" href="manifest.json">
-<title>RADAR v0.9</title>
-<style>
-body{font-family:system-ui,-apple-system,sans-serif;margin:0;background:#f5f7fb;color:#111827}main{max-width:620px;margin:auto;padding:24px 18px 40px}.top{display:flex;justify-content:space-between;align-items:center}.brand{font-size:30px;font-weight:800}.ver{font-size:12px;color:#6b7280}textarea{width:100%;box-sizing:border-box;min-height:145px;margin-top:28px;padding:16px;border:1px solid #d1d5db;border-radius:16px;font-size:17px;resize:vertical;background:#fff}button{border:0;border-radius:12px;padding:12px 14px;font-weight:700;cursor:pointer}.detect{width:100%;margin-top:12px;background:#111827;color:white;font-size:16px}.result,.panel{background:white;border-radius:16px;padding:16px;margin-top:18px;box-shadow:0 2px 12px #0000000a}.muted{color:#6b7280}.feedback{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.feedback button{font-size:12px;background:#f3f4f6}.nav{margin-top:22px;display:flex;gap:7px}.secondary{background:white;border:1px solid #d1d5db}.hidden{display:none}.item{padding:11px 0;border-bottom:1px solid #eee}.item:last-child{border-bottom:0}.signal{margin:9px 0}.why{font-size:13px;color:#4b5563;margin-top:10px}.response{margin-top:14px;padding:12px;border-radius:12px;background:#f8fafc}.tag{display:inline-block;font-size:12px;background:#eef2ff;border-radius:999px;padding:4px 8px;margin:3px 3px 0 0}.panel h3{margin-top:0}.empty{padding:8px 0}.reminder{padding:10px 0;border-bottom:1px solid #eee}.reminder:last-child{border-bottom:0}.small{font-size:13px}
-</style></head>
-<body><main>
-<div class="top"><div class="brand">RADAR</div><div class="ver">v0.9</div></div>
-<textarea id="input" placeholder="¿Qué quieres contarme?"></textarea>
-<button class="detect" id="detect">DETECTAR SEÑALES</button>
-<div id="result"></div>
-<div class="nav"><button class="secondary" id="memoryBtn">Memoria</button><button class="secondary" id="summaryBtn">Resumen</button></div>
-<section id="memory" class="panel hidden"></section><section id="summary" class="panel hidden"></section>
-</main><script src="app.js"></script></body></html>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111"><title>RADAR v0.9.1</title><link rel="manifest" href="manifest.json"></head><body><main><h1>RADAR</h1><small>v0.9.1</small><textarea id="input" placeholder="¿Qué quieres contarme?"></textarea><button id="detect">DETECTAR SEÑALES</button><section id="result"></section><button id="memoryBtn">Ver memoria</button><button id="summaryBtn">Resumen del día</button><section id="secondary"></section></main><script>
+const KEY='radar_memory_v09';
+const state=JSON.parse(localStorage.getItem(KEY)||'[]');
+const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+const days=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+function dateInfo(t){let s=t.toLowerCase(),d=new Date(), found=null;if(/\bhoy\b/.test(s)) found=new Date(d); else if(/\bpasado mañana\b/.test(s)){found=new Date(d);found.setDate(d.getDate()+2)} else if(/\bmañana\b/.test(s)){found=new Date(d);found.setDate(d.getDate()+1)} else {let m=s.match(/\b(lunes|martes|miércoles|miercoles|jueves|viernes|sábado|sabado|domingo)\b/);if(m){let n=days.indexOf(m[1].replace('miercoles','miércoles').replace('sabado','sábado'));let delta=(n-d.getDay()+7)%7;if(delta===0)delta=7;found=new Date(d);found.setDate(d.getDate()+delta)}}let tm=s.match(/(?:a las|a la)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/);if(!tm)tm=s.match(/\b(\d{1,2}):(\d{2})\s*(am|pm)?\b/);if(tm&&found){let h=+tm[1],mi=+(tm[2]||0);if((tm[3]||'').toLowerCase()==='pm'&&h<12)h+=12;if((tm[3]||'').toLowerCase()==='am'&&h===12)h=0;found.setHours(h,mi,0,0)}let rel=s.match(/(?:dentro de|en)\s+(\d+)\s*(segundos?|minutos?|horas?)/);if(rel){found=new Date();let n=+rel[1];let unit=rel[2];found.setTime(found.getTime()+(unit.startsWith('seg')?n*1000:unit.startsWith('min')?n*60000:n*3600000))}return found}
+function analyze(text){let s=text.toLowerCase(), a=[];const add=(type,label)=>a.push({type,label});
+if(/me siento|estoy (muy )?(triste|feliz|emocionado|emocionada|preocupado|preocupada|estresado|estresada|enojado|enojada|orgulloso|orgullosa|ansioso|ansiosa)|me da miedo|tengo miedo/.test(s)) add('emotion','❤️ Emoción');
+if(/me preocupa|me da miedo|tengo miedo|me estresa|estoy preocupado|estoy preocupada/.test(s)) add('concern','🚧 Preocupación');
+if(/quiero|quisiera|me gustaría|me gustaria|estoy pensando|estoy considerando|si pudiera/.test(s)) add('intention','🎯 Intención / deseo');
+if(/debo|tengo que|hay que|toca|voy a/.test(s)) add('commitment','🎯 Compromiso');
+if(/recuérdame|recuerdame|no quiero olvidar|no olvidar|debo recordar|tengo que recordar/.test(s)) add('reminder','🔔 Recordatorio');
+if(/comprar|compra|pagar|pago|gastar|cuesta|presupuesto|\bq\s?\d+|\b\d+\s?(quetzales|q)/.test(s)) add('money','💰 Dinero / posible gasto');
+if(/cómo puedo|como puedo|cómo hago|como hago|no sé cómo|no se como/.test(s)) add('question','❓ Pregunta / ayuda');
+if(/ya hice|ya terminé|ya termine|logré|logre|conseguí|consegui|terminé|termine/.test(s)) add('achievement','🏆 Logro / acción realizada');
+if(/idea|se me ocurrió|se me ocurrio|pensé en|pense en/.test(s)) add('idea','💡 Idea');
+let dt=dateInfo(text); if(dt) add('date','📅 '+dt.toLocaleString('es-GT',{dateStyle:'medium',timeStyle:'short'}));
+let explicitReminder=a.some(x=>x.type==='reminder') || (a.some(x=>x.type==='commitment')&&dt);
+return {a,dt,explicitReminder}}
+function response(r){let s=r.a.map(x=>x.type);if(s.includes('emotion')){if(s.includes('achievement'))return '🎉 Bien hecho. Reconocer lo que logras también forma parte de avanzar.';if(s.includes('concern'))return '💡 Parece que esto te está afectando. Puede valer la pena poner atención a qué lo está provocando.';return '🌟 Parece que algo importante está generando esta emoción. Pon atención a qué la provocó; puede ser una señal útil.'}if(s.includes('achievement'))return '🎉 Bien hecho. Has avanzado en algo que era importante para ti.';if(s.includes('intention'))return '🎯 Hay una intención clara. Vale la pena observar cuál podría ser el primer paso.';return '📡 Lo guardaré como parte de tu contexto.'}
+function render(r){let html='<h2>📡 Detecté:</h2><ul>'+r.a.map(x=>'<li>'+x.label+'</li>').join('')+'</ul>';if(r.explicitReminder){html+='<p>✓ Recordatorio detectado'+(r.dt?' para '+r.dt.toLocaleString('es-GT',{dateStyle:'medium',timeStyle:'short'}):'')+'.</p>';if(Notification&&Notification.permission==='granted'&&r.dt){let ms=r.dt-new Date();if(ms>0&&ms<2147483647)setTimeout(()=>new Notification('RADAR',{body:document.getElementById('input').value}),ms)}}html+='<p>'+response(r)+'</p><p><strong>¿Qué tan útil fue?</strong><br>'+['Superútil','Bastante útil','Regular','Poco útil','Nada útil'].map(x=>'<button onclick="feedback(\''+x+'\')">'+x+'</button>').join(' ')+'</p>';document.getElementById('result').innerHTML=html}
+let current=null;window.feedback=(f)=>{if(current){current.feedback=f;save();document.getElementById('result').insertAdjacentHTML('beforeend','<p>✓ Feedback guardado.</p>')}};
+detect.onclick=()=>{let t=input.value.trim();if(!t)return;current={id:Date.now(),text:t,at:new Date().toISOString()};let r=analyze(t);current.analysis=r.a;current.date=r.dt?.toISOString()||null;current.reminder=r.explicitReminder;state.push(current);save();if(r.explicitReminder&&'Notification'in window&&Notification.permission==='default')Notification.requestPermission();render(r);input.value=''};
+memoryBtn.onclick=()=>{secondary.innerHTML='<h2>🧠 Memoria</h2>'+state.slice().reverse().map(x=>'<article><small>'+new Date(x.at).toLocaleString('es-GT')+'</small><p>'+x.text+'</p><small>'+x.analysis.map(a=>a.label).join(' · ')+'</small></article>').join('')};
+summaryBtn.onclick=()=>{let today=new Date().toDateString();let xs=state.filter(x=>new Date(x.at).toDateString()===today);let counts={};xs.flatMap(x=>x.analysis).forEach(a=>counts[a.type]=(counts[a.type]||0)+1);secondary.innerHTML='<h2>📋 Resumen de hoy</h2><p>Registré <strong>'+xs.length+'</strong> entradas.</p><ul>'+Object.entries(counts).map(([k,v])=>'<li>'+k+': '+v+'</li>').join('')+'</ul>'+ (xs.length?'<h3>Entradas</h3>'+xs.map(x=>'<p>• '+x.text+'</p>').join(''):'<p>Aún no hay entradas de hoy.</p>')};
+</script></body></html>
