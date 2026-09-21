@@ -1,11 +1,7 @@
-# RADAR v0.5
-Diario + memoria + señales + recordatorios + respaldo local.
+RADAR v0.6 — Un solo clic
 
-## Publicación
-Reemplaza los archivos de la versión anterior en GitHub Pages y haz Commit changes.
+Flujo principal: escribir -> DETECTAR SEÑALES -> RADAR guarda, analiza, detecta fechas/intenciones, registra memoria, crea recordatorio cuando reconoce una fecha y solicita un feedback de 5 niveles.
 
-## Datos
-Los datos se guardan localmente en el dispositivo. Usa Exportar respaldo periódicamente.
+Feedback: Superútil, Bastante útil, Regular, Poco útil, Nada útil.
 
-## Notificaciones
-Activa el permiso desde RADAR. Esta versión comprueba recordatorios mientras la PWA está activa/ejecutándose; las notificaciones web garantizadas en segundo plano requieren un servicio push/backend en una siguiente arquitectura.
+Los datos se guardan localmente en el dispositivo. La detección de lenguaje es todavía un prototipo basado en reglas.
