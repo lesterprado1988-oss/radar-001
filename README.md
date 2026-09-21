@@ -1,14 +1,12 @@
-# RADAR 001 — v0.2
+# RADAR Diario v0.3
 
-PWA experimental para el Experimento #001.
+PWA local para diario, detección básica de señales, memoria y recordatorios.
 
-## Publicar gratis con GitHub Pages
-1. Crea un repositorio público llamado `radar-001`.
-2. Sube todos los archivos de esta carpeta a la raíz del repositorio.
-3. En GitHub abre Settings → Pages.
-4. En Source selecciona `Deploy from a branch`.
-5. Selecciona `main` y `/ (root)` y guarda.
-6. Abre la URL que GitHub genere.
-7. En Android/Chrome usa el menú ⋮ → Añadir a pantalla de inicio / Instalar app.
+## Publicación
+Sube el contenido de esta carpeta a tu repositorio de GitHub Pages, reemplazando los archivos anteriores. Mantén `index.html`, `manifest.webmanifest`, `sw.js` e `icon.svg` en la raíz.
 
-Los datos de reacciones se guardan en `localStorage` del dispositivo. Esta versión no envía el texto a ningún servidor.
+## Datos
+Las entradas, señales, feedback y recordatorios se guardan en `localStorage` del navegador/dispositivo.
+
+## Notificaciones
+El navegador debe conceder permiso. En esta versión, las notificaciones se comprueban mientras la aplicación está activa; el navegador puede limitar notificaciones programadas en segundo plano. Para notificaciones realmente fiables en segundo plano habrá que añadir un mecanismo específico de plataforma/servidor en una versión posterior.

@@ -1,38 +1,50 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827">
-<link rel="manifest" href="manifest.webmanifest">
-<title>RADAR 001</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827"><link rel="manifest" href="manifest.webmanifest">
+<title>RADAR Diario</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f3f4f6;color:#111827}main{max-width:680px;margin:auto;padding:22px 16px 40px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.brand{font-size:25px;font-weight:800}.badge{font-size:12px;background:#e5e7eb;border-radius:999px;padding:6px 9px}h1{font-size:25px;margin:12px 0 8px}p{line-height:1.5;color:#4b5563}.card{background:white;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 2px 12px #0000000b}textarea{width:100%;min-height:145px;border:1px solid #d1d5db;border-radius:14px;padding:14px;font:inherit;resize:vertical}button{border:0;border-radius:12px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer}.primary{background:#111827;color:white;width:100%;margin-top:10px}.signal{border-left:4px solid #111827;padding-left:14px;margin:14px 0}.signal h3{margin:0 0 5px}.why{font-size:14px;color:#6b7280}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{background:#f3f4f6}.empty{color:#6b7280;text-align:center;padding:20px}.small{font-size:12px;color:#6b7280}.hidden{display:none}</style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f3f4f6;color:#111827}header{background:#111827;color:white;padding:22px 18px 18px;position:sticky;top:0;z-index:3}h1{margin:0;font-size:27px}header p{margin:5px 0 0;opacity:.75;font-size:14px}.wrap{max-width:720px;margin:auto;padding:16px}.card{background:white;border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 12px #0000000d}textarea{width:100%;min-height:130px;border:1px solid #d1d5db;border-radius:13px;padding:13px;font:inherit;resize:vertical}button{border:0;border-radius:11px;padding:11px 14px;font-weight:650;cursor:pointer;background:#111827;color:white;margin:7px 5px 0 0}button.secondary{background:#e5e7eb;color:#111827}button.danger{background:#fee2e2;color:#991b1b}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.signal{border-left:4px solid #9ca3af;padding:10px 12px;margin:9px 0;background:#f9fafb;border-radius:8px}.signal b{display:block;margin-bottom:3px}.muted{color:#6b7280;font-size:13px}.entry{border-top:1px solid #e5e7eb;padding:13px 0}.entry:first-child{border-top:0}.pill{display:inline-block;background:#eef2ff;border-radius:999px;padding:4px 8px;font-size:12px;margin:3px 3px 0 0}.rem{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-top:1px solid #e5e7eb;padding:12px 0}.rem:first-child{border-top:0}.overdue{background:#fff7ed}.tabs{display:flex;gap:6px;overflow:auto;margin-bottom:8px}.tab{white-space:nowrap}.hidden{display:none}.notice{padding:10px;border-radius:10px;background:#ecfdf5;color:#065f46;font-size:13px;margin-top:8px}
+</style>
 </head>
 <body>
-<main>
-<div class="top"><div class="brand">RADAR</div><div class="badge">Experimento #001</div></div>
-<div class="card">
-<h1>Tú hablas. RADAR observa.</h1>
-<p>Escribe lo que tengas en la cabeza. No necesitas responder preguntas. RADAR buscará patrones, contradicciones y oportunidades de acción.</p>
-<textarea id="input" placeholder="Ejemplo: Estoy cansado de mi trabajo. Quiero ganar más, pero me da miedo empezar un negocio porque tengo deudas..."></textarea>
-<button class="primary" id="scan">Detectar señales</button>
-</div>
-<div id="results" class="card hidden"><h2>Señales detectadas</h2><div id="signals"></div></div>
-<div class="card"><h2>Memoria de RADAR</h2><p class="small">Tus reacciones se guardan solamente en este dispositivo.</p><div id="memory" class="small">Aún no hay señales calificadas.</div></div>
+<header><div class="wrap"><h1>📡 RADAR Diario</h1><p>Señales → acciones → resultados → aprendizaje</p></div></header>
+<main class="wrap">
+<div class="tabs"><button class="tab" onclick="showTab('diary')">Diario</button><button class="tab secondary" onclick="showTab('reminders')">Recordatorios</button><button class="tab secondary" onclick="showTab('memory')">Memoria</button></div>
+<section id="diary">
+<div class="card"><h2>¿Qué tienes en la cabeza?</h2><textarea id="text" placeholder="Escribe libremente. No necesitas contestar preguntas..."></textarea><div class="row"><button onclick="saveEntry()">Guardar y detectar</button><button class="secondary" onclick="clearText()">Limpiar</button></div><div id="signals"></div></div>
+<div class="card"><h2>Últimas entradas</h2><div id="entries"></div></div>
+</section>
+<section id="reminders" class="hidden"><div class="card"><h2>⏰ Recordatorios</h2><p class="muted">Crea uno para convertir una intención en acción.</p><input id="rTitle" placeholder="¿Qué quieres recordar?" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:11px;font:inherit"><div class="row"><input id="rDate" type="datetime-local" style="padding:11px;border:1px solid #d1d5db;border-radius:11px;font:inherit"><button onclick="addReminder()">Agregar</button><button class="secondary" onclick="requestNotifications()">Activar notificaciones</button></div><div id="remindersList"></div></div></section>
+<section id="memory" class="hidden"><div class="card"><h2>🧠 Memoria de RADAR</h2><p class="muted">Aquí aparecerán temas e ideas que se repiten en tu diario.</p><div id="memoryList"></div></div></section>
 </main>
 <script>
-const rules=[
- {keys:['deuda','endeud','préstamo','prestamo','pago','cuota'],title:'La presión financiera puede estar condicionando otras decisiones',why:'Mencionaste deuda o pagos. Eso puede hacer que una decisión parezca más arriesgada de lo que sería con mayor margen.',action:'Separar el problema de liquidez inmediata del proyecto de ingreso.'},
- {keys:['miedo','temor','me da miedo','no me atrevo','evito','evitando'],title:'Puede haber una intención bloqueada por riesgo percibido',why:'Aparece una intención junto con miedo o evitación. La oportunidad podría estar en probar algo pequeño antes de comprometer recursos grandes.',action:'Convertir la idea en un experimento reversible.'},
- {keys:['quiero','necesito','debería','debo','me gustaría'],title:'Hay una intención que podría convertirse en una acción concreta',why:'Detecté lenguaje de intención. RADAR busca el paso más pequeño que permita comprobar si la idea funciona.',action:'Definir una acción que pueda hacerse en menos de 48 horas.'},
- {keys:['idea','ideas','solución','solucion','resolver','problema'],title:'Tu forma de plantear problemas puede contener una ventaja',why:'Mencionaste ideas, problemas o soluciones. Vale observar si aparece repetidamente la capacidad de encontrar alternativas simples.',action:'Registrar el problema, tu solución y qué resultado produjo.'},
- {keys:['tiempo','ocupado','trabajo','estres','estrés','cansado'],title:'El tiempo o el estrés podrían ser una restricción clave',why:'Aparece presión de tiempo, trabajo o estrés. Una solución que ignore esa restricción probablemente será difícil de sostener.',action:'Diseñar la siguiente prueba alrededor del tiempo que realmente tienes.'}
-];
-function detect(text){const t=text.toLowerCase();return rules.filter(r=>r.keys.some(k=>t.includes(k))).map((r,i)=>({...r,id:Date.now()+i}));}
-function renderMemory(){const m=JSON.parse(localStorage.getItem('radar_memory')||'[]');document.getElementById('memory').innerHTML=m.length?m.slice(-8).reverse().map(x=>`${x.reaction} ${x.title}`).join('<br>'):'Aún no hay señales calificadas.'}
-function rate(signal,reaction){const m=JSON.parse(localStorage.getItem('radar_memory')||'[]');m.push({title:signal.title,reaction,date:new Date().toISOString()});localStorage.setItem('radar_memory',JSON.stringify(m));renderMemory();}
-document.getElementById('scan').onclick=()=>{const text=document.getElementById('input').value.trim();const box=document.getElementById('results');const out=document.getElementById('signals');if(!text){out.innerHTML='<div class="empty">Escribe algo primero.</div>';box.classList.remove('hidden');return}const found=detect(text);if(!found.length){out.innerHTML='<div class="empty">RADAR todavía no detecta una señal clara. Eso también es información.</div>';}else{out.innerHTML=found.map(s=>`<div class="signal"><h3>${s.title}</h3><div class="why">¿Por qué te lo digo? ${s.why}</div><p><b>Próximo enfoque:</b> ${s.action}</p><div class="actions"><button data-id="${s.id}" data-r="🤯">🤯 No lo había visto</button><button data-id="${s.id}" data-r="💡">💡 Tiene sentido</button><button data-id="${s.id}" data-r="❌">❌ No sirve</button></div></div>`).join('');found.forEach(s=>document.querySelectorAll(`[data-id="${s.id}"]`).forEach(b=>b.onclick=()=>rate(s,b.dataset.r)));}box.classList.remove('hidden');};
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');renderMemory();
-</script>
-</body></html>
+const KEY='radar_entries_v03', RKEY='radar_reminders_v03';
+let entries=JSON.parse(localStorage.getItem(KEY)||'[]'), reminders=JSON.parse(localStorage.getItem(RKEY)||'[]');
+const esc=s=>String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+function save(){localStorage.setItem(KEY,JSON.stringify(entries));localStorage.setItem(RKEY,JSON.stringify(reminders));}
+function detect(t){let a=[], low=t.toLowerCase(); const add=(title,why,type)=>a.push({title,why,type});
+if(/deud|deuda|debo|prestamo|préstamo|pagar|dinero|ingreso|econom[ií]a|econ[oó]mic/.test(low))add('💰 Presión financiera','Mencionaste dinero, deuda, pagos o ingresos.','finanzas');
+if(/quiero|necesito|deber[ií]a|voy a|pienso|pensando|empezar|negocio|aprender|construir|construiré/.test(low))add('🎯 Intención','Hay lenguaje de deseo, decisión o próximo paso.','intencion');
+if(/miedo|temor|evit|no me atrevo|atrever|dificil|difícil|estres|estrés|preocup/.test(low))add('⚠️ Bloqueo','Aparecen señales de miedo, estrés, evitación o dificultad.','bloqueo');
+if(/idea|soluci[oó]n|resolver|invent|mejorar|oportunidad|vendo|vender|cliente/.test(low))add('💡 Posible oportunidad','Aparece una idea, solución, mejora o posibilidad de intercambio.','oportunidad');
+if(/viernes|lunes|martes|miércoles|miercoles|jueves|sábado|sabado|domingo|mañana|manana|hoy|esta semana|la próxima|proxima/.test(low))add('📅 Momento','Mencionaste un momento que podría convertirse en una acción o recordatorio.','tiempo');
+if(!a.length)add('🔎 Señal abierta','No encontré un patrón claro. Eso también es información: sigue escribiendo.','abierta');
+return a;}
+function saveEntry(){let t=document.getElementById('text').value.trim();if(!t)return;let e={id:Date.now(),text:t,date:new Date().toISOString(),signals:detect(t)};entries.unshift(e);save();document.getElementById('text').value='';renderSignals(e);renderEntries();renderMemory();}
+function renderSignals(e){document.getElementById('signals').innerHTML='<h3>📡 Señales detectadas</h3>'+e.signals.map(s=>`<div class="signal"><b>${s.title}</b><span class="muted">${s.why}</span><div class="row"><button class="secondary" onclick="feedback('${s.type}',1)">🤯 Me hizo pensar</button><button class="secondary" onclick="feedback('${s.type}',0)">🙂 Ya lo sabía</button><button class="secondary" onclick="feedback('${s.type}',-1)">❌ No aplica</button></div></div>`).join('');}
+function feedback(type,v){let k='radar_feedback_v03',f=JSON.parse(localStorage.getItem(k)||'{}');f[type]=(f[type]||0)+v;localStorage.setItem(k,JSON.stringify(f));}
+function renderEntries(){let el=document.getElementById('entries');if(!entries.length){el.innerHTML='<p class="muted">Todavía no hay entradas.</p>';return}el.innerHTML=entries.slice(0,20).map(e=>`<div class="entry"><div class="muted">${new Date(e.date).toLocaleString('es-GT',{dateStyle:'medium',timeStyle:'short'})}</div><div>${esc(e.text)}</div><div>${e.signals.map(s=>`<span class="pill">${s.title}</span>`).join('')}</div></div>`).join('');}
+function addReminder(){let title=document.getElementById('rTitle').value.trim(), date=document.getElementById('rDate').value;if(!title||!date)return alert('Escribe qué recordar y selecciona fecha y hora.');reminders.push({id:Date.now(),title,date,done:false});save();document.getElementById('rTitle').value='';renderReminders();scheduleCheck();}
+function renderReminders(){let el=document.getElementById('remindersList');if(!reminders.length){el.innerHTML='<p class="muted">No tienes recordatorios.</p>';return}el.innerHTML=reminders.sort((a,b)=>new Date(a.date)-new Date(b.date)).map(r=>`<div class="rem ${!r.done&&new Date(r.date)<new Date()?'overdue':''}"><div><b>${esc(r.title)}</b><div class="muted">${new Date(r.date).toLocaleString('es-GT',{dateStyle:'medium',timeStyle:'short'})}</div></div><div><button class="secondary" onclick="doneReminder(${r.id})">${r.done?'✓ Hecho':'Hecho'}</button><button class="danger" onclick="deleteReminder(${r.id})">Borrar</button></div></div>`).join('');}
+function doneReminder(id){let r=reminders.find(x=>x.id===id);if(r)r.done=!r.done;save();renderReminders();}
+function deleteReminder(id){reminders=reminders.filter(x=>x.id!==id);save();renderReminders();}
+async function requestNotifications(){if(!('Notification'in window))return alert('Este navegador no permite notificaciones web.');let p=await Notification.requestPermission();alert(p==='granted'?'Notificaciones activadas.':'No se activaron las notificaciones.');}
+function scheduleCheck(){if(!('Notification'in window)||Notification.permission!=='granted')return;setInterval(()=>{let now=Date.now();let changed=false;reminders.forEach(r=>{if(!r.done&&!r.sent&&new Date(r.date).getTime()<=now){new Notification('📡 RADAR: '+r.title,{body:'Este es tu recordatorio.',icon:'icon.svg'});r.sent=true;changed=true;}});if(changed){save();renderReminders();}},30000);}
+function showTab(id){['diary','reminders','memory'].forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==id));}
+function clearText(){document.getElementById('text').value='';document.getElementById('signals').innerHTML='';}
+function renderMemory(){let counts={};entries.forEach(e=>e.signals.forEach(s=>counts[s.type]=(counts[s.type]||0)+1));let names={finanzas:'💰 Finanzas',intencion:'🎯 Intenciones',bloqueo:'⚠️ Bloqueos',oportunidad:'💡 Oportunidades',tiempo:'📅 Momentos',abierta:'🔎 Señales abiertas'};document.getElementById('memoryList').innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="signal"><b>${names[k]||k}</b><span class="muted">Apareció ${v} ${v===1?'vez':'veces'} en tus entradas.</span></div>`).join('')||'<p class="muted">Escribe varias entradas para construir memoria.</p>';}
+renderEntries();renderReminders();renderMemory();scheduleCheck();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script></body></html>

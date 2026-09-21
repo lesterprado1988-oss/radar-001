@@ -1,10 +1,1 @@
-{
-  "name":"RADAR 001",
-  "short_name":"RADAR",
-  "start_url":"./",
-  "display":"standalone",
-  "background_color":"#f3f4f6",
-  "theme_color":"#111827",
-  "description":"Experimento RADAR: detectar señales personales antes de que se conviertan en decisiones.",
-  "icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
-}
+{"name":"RADAR Diario","short_name":"RADAR","start_url":"./","display":"standalone","background_color":"#f3f4f6","theme_color":"#111827","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
